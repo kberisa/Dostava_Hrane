@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DostavaHrane.Data;
+using DostavaHrane.Models;
+using DostavaHrane.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
-namespace DostavaHrane01.Controllers
+namespace DostavaHrane.Controllers
 {
-    internal class KupacController
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    public class KupacController : ControllerBase
     {
     }
 }

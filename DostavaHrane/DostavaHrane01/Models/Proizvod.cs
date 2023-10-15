@@ -1,8 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DostavaHrane.Models
 {
-    public class Proizvodi : Entitet
+    public class Proizvod : Entitet
     {
         public int Sifra { get; set; }
         public string? Naziv { get; set; }

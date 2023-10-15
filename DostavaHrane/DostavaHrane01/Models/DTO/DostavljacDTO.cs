@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DostavaHrane.Models
+namespace DostavaHrane.Models.DTO
 {
-	public class Dostavljac : Entitet
-	{
+    public class DostavljacDTO
+    {
         public string? Ime { get; set; }
         public string? Prezime { get; set; }
         public string? Oib { get; set; }
