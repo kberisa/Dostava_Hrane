@@ -14,8 +14,7 @@ namespace DostavaHrane.Data
         public DbSet<Proizvod> Proizvod { get; set; }
         public DbSet<Kosarica> Kosarica { get; set; }
          }
-        protected override void OnModelCreating(
-               ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Kosarica>().HasOne(k => k.Kupac);
             modelBuilder.Entity<Kosarica>().HasOne(d => d.Dostavljac);
