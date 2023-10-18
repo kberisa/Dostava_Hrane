@@ -4,6 +4,7 @@ using DostavaHrane.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 
 namespace DostavaHrane.Controllers
@@ -13,23 +14,27 @@ namespace DostavaHrane.Controllers
     public class KupacController : ControllerBase
     {
         private readonly DostavaHraneContext _context;
+        private readonly ILogger<KupacController> _logger;
 
-        public KupacController(DostavaHraneContext context)
+        public KupacController(DostavaHraneContext context,
+            ILogger<KupacController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
 
         [HttpGet]
         public IActionResult Get()
         {
+            _logger.LogInformation("Dohvaćam Kupce");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var kupci = _context.Kupac.ToList();
-            if  kupci == null || kupci.Count == 0)
+            if  (kupci == null || kupci.Count == 0)
             {
                 return new EmptyResult();
             }
@@ -168,8 +173,7 @@ namespace DostavaHrane.Controllers
 
             try
             {
-                var kupci = _context.Kupac
-                    .Include(k => k.Kosarica)
+                var kupci = _context.Kupac                    
                     .Where(k => k.Ime.Contains(uvjet) || k.Prezime.Contains(uvjet))
 
                     // .FromSqlRaw($"SELECT a.* FROM kupac a left join clan b on a.sifra=b.kupac where concat(ime,' ',prezime,' ',ime) like '%@uvjet%'",
@@ -193,12 +197,12 @@ namespace DostavaHrane.Controllers
                 });
 
 
-                return new JsonResult(vrati); //200
+                return new JsonResult(vrati); 
 
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable, e.Message); //204
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, e.Message); 
             }
         }
 
