@@ -1,4 +1,4 @@
-﻿using DostavaHrane.Data;
+using DostavaHrane.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

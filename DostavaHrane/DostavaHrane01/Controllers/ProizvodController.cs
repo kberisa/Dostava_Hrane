@@ -1,10 +1,7 @@
 ﻿using DostavaHrane.Data;
 using DostavaHrane.Models;
 using DostavaHrane.Models.DTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Runtime.InteropServices;
 
 namespace DostavaHrane.Controllers
 {
@@ -40,9 +37,9 @@ namespace DostavaHrane.Controllers
 
             try
             {
-                var proizvod = _context.Proizvod();
+                var proizvod = _context.Proizvod.ToList();
 
-                if (proizvod == null || proizvod.Count = 0)
+                if (proizvod == null || proizvod.Count == 0)
                 {
                     return new EmptyResult();
                 }
@@ -57,7 +54,7 @@ namespace DostavaHrane.Controllers
                         Naziv = p.Naziv,
                         Opis = p.Opis,
                         Cijena = p.Cijena,
-                        Dostupnost =p.Dostupnost,
+                        Dostupnost = p.Dostupnost,
                     });
                 });
                 return Ok(vrati);

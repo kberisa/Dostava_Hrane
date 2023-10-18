@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DostavaHrane1.Models;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DostavaHrane.Models

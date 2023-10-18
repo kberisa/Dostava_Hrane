@@ -1,11 +1,8 @@
 ﻿using DostavaHrane.Data;
 using DostavaHrane.Models;
 using DostavaHrane.Models.DTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Runtime.InteropServices;
 
 namespace DostavaHrane.Controllers
 {
@@ -34,7 +31,7 @@ namespace DostavaHrane.Controllers
             }
 
             var kupci = _context.Kupac.ToList();
-            if  (kupci == null || kupci.Count == 0)
+            if (kupci == null || kupci.Count == 0)
             {
                 return new EmptyResult();
             }
@@ -173,7 +170,9 @@ namespace DostavaHrane.Controllers
 
             try
             {
-                var kupci = _context.Kupac                    
+                var kupci = _context.Kupac
+                    .Include(k => k.Dostavljaci)
+                    .Include(k => k.Proizvodi)
                     .Where(k => k.Ime.Contains(uvjet) || k.Prezime.Contains(uvjet))
 
                     // .FromSqlRaw($"SELECT a.* FROM kupac a left join clan b on a.sifra=b.kupac where concat(ime,' ',prezime,' ',ime) like '%@uvjet%'",
@@ -197,12 +196,12 @@ namespace DostavaHrane.Controllers
                 });
 
 
-                return new JsonResult(vrati); 
+                return new JsonResult(vrati);
 
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable, e.Message); 
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, e.Message);
             }
         }
 

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DostavaHrane1.Models;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.RegularExpressions;
 
 namespace DostavaHrane.Models
 {
@@ -10,5 +12,8 @@ namespace DostavaHrane.Models
         public string? Opis { get; set; }
         public decimal? Cijena { get; set; }
         public bool? Dostupnost { get; set; }
+
+        public ICollection<Kupac> Kupci { get; } = new List<Kupac>();
+        public ICollection<Dostavljac> Dostavljaci { get; } = new List<Dostavljac>();
     }
 }

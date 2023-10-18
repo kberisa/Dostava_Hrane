@@ -1,10 +1,7 @@
 ﻿using DostavaHrane.Data;
 using DostavaHrane.Models;
 using DostavaHrane.Models.DTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace DostavaHrane.Controllers
 {
@@ -40,9 +37,9 @@ namespace DostavaHrane.Controllers
 
             try
             {
-                var dostavljac = _context.Dostavljac();
+                var dostavljac = _context.Dostavljac.ToList();
 
-                if (dostavljac == null || dostavljac.Count = 0)
+                if (dostavljac == null || dostavljac.Count == 0)
                 {
                     return new EmptyResult();
                 }
@@ -117,7 +114,7 @@ namespace DostavaHrane.Controllers
                     Oib = dto.Oib,
                     Email = dto.Email,
                     Telefon = dto.Telefon,
-                    
+
                 };
 
                 _context.Dostavljac.Add(d);
@@ -158,7 +155,7 @@ namespace DostavaHrane.Controllers
                 dostavljacBaza.Oib = ddto.Oib;
                 dostavljacBaza.Email = ddto.Email;
                 dostavljacBaza.Telefon = ddto.Telefon;
-                
+
 
                 _context.Dostavljac.Update(dostavljacBaza);
                 _context.SaveChanges();
