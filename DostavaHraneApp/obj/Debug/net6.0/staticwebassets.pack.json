@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\GitHub\\Dostava_Hrane\\DostavaHraneApp\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.DostavaHraneApp.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.build.DostavaHraneApp.props",
+      "PackagePath": "build\\DostavaHraneApp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildMultiTargeting.DostavaHraneApp.props",
+      "PackagePath": "buildMultiTargeting\\DostavaHraneApp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildTransitive.DostavaHraneApp.props",
+      "PackagePath": "buildTransitive\\DostavaHraneApp.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
