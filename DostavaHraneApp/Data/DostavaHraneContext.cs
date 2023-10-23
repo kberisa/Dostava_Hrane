@@ -21,8 +21,8 @@ namespace DostavaHrane.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Kosarica>().HasOne(k => k.Kupac);
-            modelBuilder.Entity<Kosarica>().HasOne(d => d.Dostavljac);
-            modelBuilder.Entity<Kosarica>().HasOne(p => p.Proizvod);
+            modelBuilder.Entity<Kosarica>().HasOne(k => k.Dostavljac);
+            modelBuilder.Entity<Kosarica>().HasOne(k => k.Proizvod);
 
 
             //modelBuilder.Entity<Kosarica>()

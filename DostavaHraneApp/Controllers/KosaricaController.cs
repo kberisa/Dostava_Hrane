@@ -27,7 +27,7 @@ namespace DostavaHrane.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation("Dohvaćam kosaricu");
+            _logger.LogInformation("Dohvaćam košaricu");
 
             if (!ModelState.IsValid)
             {
@@ -366,7 +366,7 @@ namespace DostavaHrane.Controllers
         }
 
         [HttpDelete]
-        [Route("{sifra:int}/dodaj/{proizvodSifra:int}")]
+        [Route("{sifra:int}/dodaj/{proizvodiSifra:int}")]
         public IActionResult ObrisiProizvod(int sifra, int proizvodSifra)
         {
 
