@@ -11,6 +11,5 @@ namespace DostavaHrane.Models.DTO
         public string? AdresaDostave { get; set; }
         public string? StatusDostave { get; set; }
         public string? Dostavljac { get; set; }
-        public object? SifraKupac { get; set; }
     }
 }

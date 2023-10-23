@@ -187,9 +187,9 @@ namespace DostavaHrane.Controllers
 
             try
             {
-                var kosarica = _context.Kupac.Find(kosaricaDTO.SifraKupac);
+                var kosarica = _context.sifra.Find(kosaricaDTO.Sifra);
 
-                if (kupac == null)
+                if (kosarica == null)
                 {
                     return BadRequest();
                 }
@@ -201,9 +201,7 @@ namespace DostavaHrane.Controllers
                     return BadRequest();
                 }
 
-                kosarica.Proizvod = kosaricaDTO.Proizvod;
-                kosarica.Kolicina = kosaricaDTO.Kolicina;
-                kosarica.AdresaDostave = kosaricaDTO.AdresaDostave;
+                kosarica.Kosarica = kosaricaDTO;
 
                 _context.Kosarica.Update(kosarica);
                 _context.SaveChanges();
@@ -260,8 +258,8 @@ namespace DostavaHrane.Controllers
 
 
         [HttpGet]
-        [Route("{sifra:int}/Kupci")]
-        public IActionResult GetKupci(int sifra)
+        [Route("{sifra:int}/Proizvodi")]
+        public IActionResult GetProizvodi(int sifra)
         {
             if (!ModelState.IsValid)
             {
@@ -276,7 +274,7 @@ namespace DostavaHrane.Controllers
             try
             {
                 var kosarica = _context.Kosarica
-                    .Include(k => k.Kupac)
+                    .Include(k => k.Proizvodi)
                     .FirstOrDefault(k => k.Sifra == sifra);
 
                 if (kosarica == null)
@@ -284,15 +282,15 @@ namespace DostavaHrane.Controllers
                     return BadRequest();
                 }
 
-                if (kosarica.Kupac == null || kosarica.Kupac.Count == 0)
+                if (kosarica.Proizvodi == null || kosarica.Proizvodi.Count == 0)
                 {
                     return new EmptyResult();
                 }
 
-                List<KupacDTO> vrati = new();
-                kosarica.Kupac.ForEach(k =>
+                List<ProizvodDTO> vrati = new();
+                kosarica.Proizvodi.ForEach(k =>
                 {
-                    vrati.Add(new KupacDTO()
+                    vrati.Add(new ProizvodDTO()
                     {
                         Sifra = k.Sifra,
                         Proizvod = k.Proizvod,
@@ -316,15 +314,15 @@ namespace DostavaHrane.Controllers
         }
 
         [HttpPost]
-        [Route("{sifra:int}/dodaj/{KupacSifra:int}")]
-        public IActionResult DodajKupac(int sifra, int kupacSifra)
+        [Route("{sifra:int}/dodaj/{ProizvodiSifra:int}")]
+        public IActionResult DodajProizvodi(int sifra, int proizvodSifra)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            if (sifra <= 0 || kupacSifra <= 0)
+            if (sifra <= 0 || proizvodSifra <= 0)
             {
                 return BadRequest();
             }
@@ -333,7 +331,7 @@ namespace DostavaHrane.Controllers
             {
 
                 var kosarica = _context.Kosarica
-                    .Include(k => k.Kupac)
+                    .Include(k => k.Proizvod)
                     .FirstOrDefault(k => k.Sifra == sifra);
 
                 if (kosarica == null)
@@ -341,15 +339,15 @@ namespace DostavaHrane.Controllers
                     return BadRequest();
                 }
 
-                var kupac = _context.Kupac.Find(kupacSifra);
+                var proizvod = _context.Proizvod.Find(proizvodSifra);
 
-                if (kupacSifra == null)
+                if (proizvodSifra == null)
                 {
                     return BadRequest();
                 }
 
-                // napraviti kontrolu da li je taj polaznik već u toj grupi
-                kosarica.Kupci.Add(kupac);
+                // napraviti kontrolu da li je taj proizvod već u toj kosarici
+                kosarica.Proizvodi.Add(proizvod);
 
                 _context.Kosarica.Update(kosarica);
                 _context.SaveChanges();
@@ -368,8 +366,8 @@ namespace DostavaHrane.Controllers
         }
 
         [HttpDelete]
-        [Route("{sifra:int}/dodaj/{kupacSifra:int}")]
-        public IActionResult ObrisiKupca(int sifra, int kupacSifra)
+        [Route("{sifra:int}/dodaj/{proizvodSifra:int}")]
+        public IActionResult ObrisiProizvod(int sifra, int proizvodSifra)
         {
 
             if (!ModelState.IsValid)
@@ -377,7 +375,7 @@ namespace DostavaHrane.Controllers
                 return BadRequest();
             }
 
-            if (sifra <= 0 || kupacSifra <= 0)
+            if (sifra <= 0 || proizvodSifra <= 0)
             {
                 return BadRequest();
             }
@@ -386,23 +384,23 @@ namespace DostavaHrane.Controllers
             {
 
                 var kosarica = _context.Kosarica
-                    .Include(g => g.Kupac)
-                    .FirstOrDefault(g => g.Sifra == sifra);
+                    .Include(k => k.Proizvod)
+                    .FirstOrDefault(k => k.Sifra == sifra);
 
                 if (kosarica == null)
                 {
                     return BadRequest();
                 }
 
-                var kupac = _context.Kupac.Find(kupacSifra);
+                var proizvod = _context.Proizvod.Find(proizvodSifra);
 
-                if (kupac == null)
+                if (proizvod == null)
                 {
                     return BadRequest();
                 }
 
 
-                kosarica.Kupci.Remove(kupac);
+                kosarica.Proizvodi.Remove(proizvod);
 
                 _context.Kosarica.Update(kosarica);
                 _context.SaveChanges();
