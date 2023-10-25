@@ -81,3 +81,4 @@ D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Debug\net6.0\DostavaHraneApp.staticw
 D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Debug\net6.0\Humanizer.dll
 D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
 D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Debug\net6.0\DostavaHraneApp.xml
+D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Debug\net6.0\AutoMapper.dll

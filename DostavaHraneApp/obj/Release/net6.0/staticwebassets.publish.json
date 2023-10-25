@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "xPmcSKT2oTiwH29rXC/VwPCEnT79HMwhQ8zzlkCSyeE=",
+  "Source": "DostavaHraneApp",
+  "BasePath": "_content/DostavaHraneApp",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "DostavaHraneApp\\wwwroot",
+      "Source": "DostavaHraneApp",
+      "ContentRoot": "D:\\GitHub\\Dostava_Hrane\\DostavaHraneApp\\wwwroot\\",
+      "BasePath": "_content/DostavaHraneApp",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\GitHub\\Dostava_Hrane\\DostavaHraneApp\\wwwroot\\index.html",
+      "SourceId": "DostavaHraneApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\GitHub\\Dostava_Hrane\\DostavaHraneApp\\wwwroot\\",
+      "BasePath": "_content/DostavaHraneApp",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ]
+}

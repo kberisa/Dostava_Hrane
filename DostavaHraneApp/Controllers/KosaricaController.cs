@@ -3,7 +3,8 @@ using DostavaHrane.Models;
 using DostavaHrane.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
+using DostavaHrane.Mappings;
+using AutoMapper;
 
 namespace DostavaHrane.Controllers
 {
@@ -13,22 +14,22 @@ namespace DostavaHrane.Controllers
     {
         private readonly DostavaHraneContext _context;
         private readonly ILogger<KosaricaController> _logger;
+        private readonly IMapper _mapper;
         /// <summary>
         /// Konstruktor
         /// </summary>
         /// <param name="context"></param>
         public KosaricaController(DostavaHraneContext context,
-            ILogger<KosaricaController> logger)
+            ILogger<KosaricaController> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation("Dohvaćam košaricu");
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -46,23 +47,7 @@ namespace DostavaHrane.Controllers
                 {
                     return new EmptyResult();
                 }
-
-                List<KosaricaDTO> vrati = new();
-
-                kosarice.ForEach(k =>
-                {
-                    vrati.Add(new KosaricaDTO()
-                    {
-                        Sifra = k.Sifra,
-                        Proizvod = k.Proizvod,
-                        Kolicina = k.Kolicina,
-                        Kupac = k.Kupac,
-                        AdresaDostave = k.AdresaDostave,
-                        StatusDostave = k.StatusDostave,
-                        Dostavljac = k.Dostavljac,
-                    });
-                });
-                return Ok(vrati);
+                return Ok(kosarice.MapKosarica());
             }
             catch (Exception ex)
             {
@@ -70,105 +55,70 @@ namespace DostavaHrane.Controllers
                     StatusCodes.Status503ServiceUnavailable,
                     ex);
             }
-
-
         }
 
         [HttpGet]
         [Route("{sifra:int}")]
         public IActionResult GetById(int sifra)
         {
-           
-
             if (sifra == 0)
             {
                 return BadRequest(ModelState);
             }
 
-            var k = _context.Kosarica.Include(k => k.Kupac)
-              .FirstOrDefault(k => k.Sifra == sifra);
+            var kosarica = _context.Kosarica
+                .Include(k => k.Kupac)
+                .FirstOrDefault(k => k.Sifra == sifra);
 
-            if (k == null)
+            if (kosarica == null)
             {
-                return StatusCode(StatusCodes.Status204NoContent, k); 
+                return new EmptyResult();
             }
 
-            try
-            {
-                return new JsonResult(new KosaricaDTO()
-                {
-                    Sifra = k.Sifra,
-                    Proizvod = k.Proizvod,
-                    Kolicina = k.Kolicina,
-                    Kupac = k.Kupac,
-                    AdresaDostave = k.AdresaDostave,
-                    StatusDostave = k.StatusDostave,
-                    Dostavljac = k.Dostavljac                       
-                });
+            var kosaricaDTO = _mapper.Map<KosaricaDTO>(kosarica);
 
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable, ex.Message);
-            }
+            return Ok(kosaricaDTO);
         }
-
-
 
         [HttpPost]
         public IActionResult Post(KosaricaDTO kosaricaDTO)
         {
-
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (KosaricaDTO.Proizvod == 0)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-  
-                var proizvod = _context.Proizvod.Find(KosaricaDTO.Proizvod);
-                
-
-                if (proizvod = null)
                 {
                     return BadRequest(ModelState);
                 }
-                
-                    Kosarica k = new()
+
+            if (string.IsNullOrEmpty(kosaricaDTO.Proizvod))
                 {
-                    Proizvod = kosaricaDTO.Proizvod,
-                    Kolicina = kosaricaDTO.Kolicina,
-                    AdresaDostave = kosaricaDTO.AdresaDostave
-                };
+                    return BadRequest(ModelState);
+                }
 
-                _context.Kosarica.Add(k);
-                _context.SaveChanges();
+            try
+                {
 
-                    KosaricaDTO.Sifra = k.Sifra;
-                    KosaricaDTO.Proizvod = k.Proizvod;
-                    KosaricaDTO.Kolicina = k.Kolicina;
-                    KosaricaDTO.Kupac = k.Kupac;
-                    KosaricaDTO.AdresaDostave = k.AdresaDostave;
-                    KosaricaDTO.StatusDostave = k.StatusDostave;
-                    KosaricaDTO.Dostavljac = k.Dostavljac;
+                var kosarica = _mapper.Map<Kosarica>(kosaricaDTO);
+                var proizvod = _context.Proizvod.Find(kosaricaDTO.Proizvod);
 
-                return Ok(KosaricaDTO);
+            if (proizvod == null)
+                 {
+                    return BadRequest(ModelState);
+                 }
 
+                    kosarica.Proizvod = proizvod;
 
+                    _context.Kosarica.Add(kosarica);
+                    _context.SaveChanges();
+
+                    var KosaricaDTO = _mapper.Map<KosaricaDTO>(kosarica);
+
+                    return Ok(KosaricaDTO);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(
+                        StatusCodes.Status503ServiceUnavailable,
+                        ex);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(
-                   StatusCodes.Status503ServiceUnavailable,
-                   ex);
-            }
-
         }
 
 
@@ -176,38 +126,24 @@ namespace DostavaHrane.Controllers
         [Route("{sifra:int}")]
         public IActionResult Put(int sifra, KosaricaDTO kosaricaDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            if (sifra <= 0 || kosaricaDTO == null)
+            if (!ModelState.IsValid || sifra <= 0 || kosaricaDTO == null)
             {
                 return BadRequest();
             }
 
             try
-            {
-                var kosarica = _context.sifra.Find(kosaricaDTO.Sifra);
-
-                if (kosarica == null)
-                {
-                    return BadRequest();
-                }
-
+            {   
                 var kosarica = _context.Kosarica.Find(sifra);
 
                 if (kosarica == null)
                 {
                     return BadRequest();
                 }
-
-                kosarica.Kosarica = kosaricaDTO;
-
+ 
+                _mapper.Map(kosaricaDTO, kosarica);
+         
                 _context.Kosarica.Update(kosarica);
                 _context.SaveChanges();
-
-                kosaricaDTO.Sifra = sifra;
-                kosaricaDTO.Kupac = kupac.Ime;
 
                 return Ok(kosaricaDTO);
             }
@@ -217,43 +153,41 @@ namespace DostavaHrane.Controllers
                     StatusCodes.Status503ServiceUnavailable,
                     ex.Message);
             }
-
-
         }
 
 
 
         [HttpDelete]
-        [Route("{sifra:int}")]
-        [Produces("application/json")]
-        public IActionResult Delete(int sifra)
-        {
-            if (sifra <= 0)
+            [Route("{sifra:int}")]
+            [Produces("application/json")]
+            public IActionResult Delete(int sifra)
             {
-                return BadRequest();
+                if (sifra <= 0)
+                {
+                    return BadRequest();
+                }
+
+                var kosaricaBaza = _context.Kosarica.Find(sifra);
+                if (kosaricaBaza == null)
+                {
+                    return BadRequest();
+                }
+
+                try
+                {
+                    _context.Kosarica.Remove(kosaricaBaza);
+                    _context.SaveChanges();
+
+                    return new JsonResult("{\"poruka\":\"Obrisano\"}");
+
+                }
+                catch (Exception ex)
+                {
+
+                    return new JsonResult("{\"poruka\":\"Ne može se obrisati\"}");
+
+                }
             }
-
-            var kosaricaBaza = _context.Kosarica.Find(sifra);
-            if (kosaricaBaza == null)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-                _context.Kosarica.Remove(kosaricaBaza);
-                _context.SaveChanges();
-
-                return new JsonResult("{\"poruka\":\"Obrisano\"}");
-
-            }
-            catch (Exception ex)
-            {
-
-                return new JsonResult("{\"poruka\":\"Ne može se obrisati\"}");
-
-            }
-        }
 
 
 
@@ -261,12 +195,7 @@ namespace DostavaHrane.Controllers
         [Route("{sifra:int}/Proizvodi")]
         public IActionResult GetProizvodi(int sifra)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            if (sifra <= 0)
+            if (!ModelState.IsValid || sifra <= 0)
             {
                 return BadRequest();
             }
@@ -277,145 +206,128 @@ namespace DostavaHrane.Controllers
                     .Include(k => k.Proizvodi)
                     .FirstOrDefault(k => k.Sifra == sifra);
 
-                if (kosarica == null)
-                {
-                    return BadRequest();
-                }
-
-                if (kosarica.Proizvodi == null || kosarica.Proizvodi.Count == 0)
+                if (kosarica == null || kosarica.Proizvodi == null || kosarica.Proizvodi.Count == 0)
                 {
                     return new EmptyResult();
                 }
 
-                List<ProizvodDTO> vrati = new();
-                kosarica.Proizvodi.ForEach(k =>
-                {
-                    vrati.Add(new ProizvodDTO()
-                    {
-                        Sifra = k.Sifra,
-                        Proizvod = k.Proizvod,
-                        Kolicina = k.Kolicina,
-                        Kupac = k.Kupac,
-                        AdresaDostave = k.AdresaDostave,
-                        StatusDostave = k.StatusDostave,
-                        Dostavljac = k.Dostavljac
-                    });
-                });
-                return Ok(vrati);
+                // Use AutoMapper to map Proizvod entities to ProizvodDTO.
+                var proizvodiDTO = _mapper.Map<List<ProizvodDTO>>(kosarica.Proizvodi);
+
+                return Ok(proizvodiDTO);
             }
             catch (Exception ex)
             {
                 return StatusCode(
-                        StatusCodes.Status503ServiceUnavailable,
-                        ex.Message);
+                    StatusCodes.Status503ServiceUnavailable,
+                    ex.Message);
             }
-
-
         }
 
         [HttpPost]
-        [Route("{sifra:int}/dodaj/{ProizvodiSifra:int}")]
-        public IActionResult DodajProizvodi(int sifra, int proizvodSifra)
-        {
-            if (!ModelState.IsValid)
+            [Route("{sifra:int}/dodaj/{ProizvodiSifra:int}")]
+            public IActionResult DodajProizvodi(int sifra, int proizvodSifra)
             {
-                return BadRequest();
-            }
-
-            if (sifra <= 0 || proizvodSifra <= 0)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-
-                var kosarica = _context.Kosarica
-                    .Include(k => k.Proizvod)
-                    .FirstOrDefault(k => k.Sifra == sifra);
-
-                if (kosarica == null)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest();
                 }
 
-                var proizvod = _context.Proizvod.Find(proizvodSifra);
-
-                if (proizvodSifra == null)
+                if (sifra <= 0 || proizvodSifra <= 0)
                 {
                     return BadRequest();
                 }
 
-                // napraviti kontrolu da li je taj proizvod već u toj kosarici
-                kosarica.Proizvodi.Add(proizvod);
+                try
+                {
 
-                _context.Kosarica.Update(kosarica);
-                _context.SaveChanges();
+                    var kosarica = _context.Kosarica
+                        .Include(k => k.Proizvod)
+                        .FirstOrDefault(k => k.Sifra == sifra);
 
-                return Ok();
+                    if (kosarica == null)
+                    {
+                        return BadRequest();
+                    }
+
+                    var proizvod = _context.Proizvod.Find(proizvodSifra);
+
+                    if (proizvodSifra == null)
+                    {
+                        return BadRequest();
+                    }
+
+                    // napraviti kontrolu da li je taj proizvod već u toj kosarici
+                    kosarica.Proizvodi.Add(proizvod);
+
+                    _context.Kosarica.Update(kosarica);
+                    _context.SaveChanges();
+
+                    return Ok();
+
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(
+                           StatusCodes.Status503ServiceUnavailable,
+                           ex.Message);
+
+                }
 
             }
-            catch (Exception ex)
-            {
-                return StatusCode(
-                       StatusCodes.Status503ServiceUnavailable,
-                       ex.Message);
 
-            }
-
-        }
-
-        [HttpDelete]
-        [Route("{sifra:int}/dodaj/{proizvodiSifra:int}")]
-        public IActionResult ObrisiProizvod(int sifra, int proizvodSifra)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            if (sifra <= 0 || proizvodSifra <= 0)
-            {
-                return BadRequest();
-            }
-
-            try
+            [HttpDelete]
+            [Route("{sifra:int}/dodaj/{proizvodiSifra:int}")]
+            public IActionResult ObrisiProizvod(int sifra, int proizvodSifra)
             {
 
-                var kosarica = _context.Kosarica
-                    .Include(k => k.Proizvod)
-                    .FirstOrDefault(k => k.Sifra == sifra);
-
-                if (kosarica == null)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest();
                 }
 
-                var proizvod = _context.Proizvod.Find(proizvodSifra);
-
-                if (proizvod == null)
+                if (sifra <= 0 || proizvodSifra <= 0)
                 {
                     return BadRequest();
                 }
 
+                try
+                {
 
-                kosarica.Proizvodi.Remove(proizvod);
+                    var kosarica = _context.Kosarica
+                        .Include(k => k.Proizvod)
+                        .FirstOrDefault(k => k.Sifra == sifra);
 
-                _context.Kosarica.Update(kosarica);
-                _context.SaveChanges();
+                    if (kosarica == null)
+                    {
+                        return BadRequest();
+                    }
 
-                return Ok();
+                    var proizvod = _context.Proizvod.Find(proizvodSifra);
 
+                    if (proizvod == null)
+                    {
+                        return BadRequest();
+                    }
+
+
+                    kosarica.Proizvodi.Remove(proizvod);
+
+                    _context.Kosarica.Update(kosarica);
+                    _context.SaveChanges();
+
+                    return Ok();
+
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(
+                           StatusCodes.Status503ServiceUnavailable,
+                           ex.Message);
+
+                
+                }
             }
-            catch (Exception ex)
-            {
-                return StatusCode(
-                       StatusCodes.Status503ServiceUnavailable,
-                       ex.Message);
-
-            }
-
-        }
+        
     }
 }
