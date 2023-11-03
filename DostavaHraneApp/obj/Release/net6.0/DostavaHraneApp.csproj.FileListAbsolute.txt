@@ -82,3 +82,9 @@ D:\GitHub\Dostava_Hrane\DostavaHraneApp\obj\Release\net6.0\refint\DostavaHraneAp
 D:\GitHub\Dostava_Hrane\DostavaHraneApp\obj\Release\net6.0\DostavaHraneApp.pdb
 D:\GitHub\Dostava_Hrane\DostavaHraneApp\obj\Release\net6.0\DostavaHraneApp.genruntimeconfig.cache
 D:\GitHub\Dostava_Hrane\DostavaHraneApp\obj\Release\net6.0\ref\DostavaHraneApp.dll
+D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Release\net6.0\Microsoft.Extensions.DependencyModel.dll
+D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Release\net6.0\Mono.TextTemplating.dll
+D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Release\net6.0\System.CodeDom.dll
+D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Release\net6.0\System.Text.Encodings.Web.dll
+D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Release\net6.0\System.Text.Json.dll
+D:\GitHub\Dostava_Hrane\DostavaHraneApp\bin\Release\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll

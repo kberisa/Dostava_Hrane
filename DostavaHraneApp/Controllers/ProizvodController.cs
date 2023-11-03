@@ -213,7 +213,7 @@ namespace DostavaHrane.Controllers
 
         [HttpDelete]
         [Route("{sifra:int}")]
-        [Produces("application/json")]
+        //[Produces("application/json")]
         public IActionResult Delete(int sifra)
         {
             if (sifra <= 0)

@@ -1,7 +1,8 @@
 ﻿using System;
-using DostavaHrane.Mappers;
+using AutoMapper;
 using DostavaHrane.Models.DTO;
 using DostavaHrane.Models;
+using DostavaHrane.Mappers;
 
 namespace DostavaHrane.Mappings
 {
@@ -9,8 +10,8 @@ namespace DostavaHrane.Mappings
     {
         public static List<KosaricaDTO> MapKosarica(this List<Kosarica> kosarica)
         {
-
-            var mapper = KosaricaMapper.InitializeAutomapper();
+            var config = KosaricaMapper.InitializeAutomapper();
+            var mapper = new Mapper((AutoMapper.IConfigurationProvider)config);
             var vrati = new List<KosaricaDTO>();
             kosarica.ForEach(k =>
             {

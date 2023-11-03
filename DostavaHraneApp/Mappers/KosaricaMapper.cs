@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using AutoMapper;
+﻿using AutoMapper;
 using DostavaHrane.Models;
 using DostavaHrane.Models.DTO;
 
@@ -8,32 +6,28 @@ namespace DostavaHrane.Mappers
 {
     public class KosaricaMapper
     {
-
-        public static Mapper InitializeAutomapper()
+        public static IMapper InitializeAutomapper()
         {
             var config = new MapperConfiguration(cfg =>
             {
-
                 cfg.CreateMap<Kosarica, KosaricaDTO>()
-                .ForMember(dest => dest.Kupac, act => act.MapFrom(src => src.Kupac!.KorisnickoIme)) //null-forgiving "!" operator   https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
-                .ForMember(dest => dest.Proizvod, act => act.MapFrom(src => src.Proizvodi.Count));
-
+                    .ForMember(dest => dest.Kupac, act => act.MapFrom(src => src.Kupac.KorisnickoIme))
+                    .ForMember(dest => dest.Proizvod, act => act.MapFrom(src => src.Proizvod.Naziv));
             });
-            var mapper = new Mapper(config);
-            return mapper;
+
+            return new Mapper(config);
         }
 
-        public static Mapper InitializeAutomapperKrace()
+        public static IMapper InitializeAutomapperKrace()
         {
-            return new Mapper(
-                new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<Kosarica, KosaricaDTO>()
-                    .ForMember(dest => dest.Proizvod, act => act.MapFrom(src => src.Proizvod!.Naziv)) //null-forgiving "!" operator   https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
-                    .ForMember(dest => dest.Kolicina, act => act.MapFrom(src => src.Proizvodi.Count));
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Kosarica, KosaricaDTO>()
+                    .ForMember(dest => dest.Proizvod, act => act.MapFrom(src => src.Proizvod.Naziv))
+                    .ForMember(dest => dest.Kolicina, act => act.MapFrom(src => src.Kolicina));
+            });
 
-                }));
+            return new Mapper(config);
         }
     }
 }
-

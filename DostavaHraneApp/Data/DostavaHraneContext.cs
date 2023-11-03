@@ -8,21 +8,37 @@ namespace DostavaHrane.Data
 {
     public class DostavaHraneContext : DbContext
     {
-        public DostavaHraneContext(DbContextOptions<DostavaHraneContext> opcije)
-            : base(opcije)
-        {
-        }
+
         public DbSet<Dostavljac> Dostavljac { get; set; }
         public DbSet<Kupac> Kupac { get; set; }
 
         public DbSet<Proizvod> Proizvod { get; set; }
         public DbSet<Kosarica> Kosarica { get; set; }
+        public DostavaHraneContext(DbContextOptions<DostavaHraneContext> opcije)
+            : base(opcije)
+        {
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Kosarica>().HasOne(k => k.Kupac);
-            modelBuilder.Entity<Kosarica>().HasOne(k => k.Dostavljac);
-            modelBuilder.Entity<Kosarica>().HasOne(k => k.Proizvod);
+            modelBuilder.Entity<Kosarica>()
+                .HasOne(k => k.Dostavljac)
+                .WithMany(d => d.KosaricaDostavljaci)
+                .HasForeignKey(k => k.DostavljacSifra);
+
+            modelBuilder.Entity<Kosarica>()
+                .HasOne(k => k.Proizvod)
+                .WithMany(p => p.KosaricaProizvodi)
+                .HasForeignKey(k => k.ProizvodSifra);
+
+            modelBuilder.Entity<Kosarica>()
+                .HasOne(k => k.Kupac)
+                .WithMany(k => k.KosaricaKupci)
+                .HasForeignKey(k => k.KupacSifra);
+
+
+
+            base.OnModelCreating(modelBuilder);
 
 
             //modelBuilder.Entity<Kosarica>()

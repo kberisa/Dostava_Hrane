@@ -23,13 +23,9 @@ namespace DostavaHrane.Controllers
         }
 
 
-
-
         [HttpGet]
-        public IActionResult Get()
-        {
-            _logger.LogInformation("Dohvaćam Dostavljace");
-
+        public IActionResult GetDostavljac(DostavljacDTO dto)
+        {         
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -44,21 +40,7 @@ namespace DostavaHrane.Controllers
                     return new EmptyResult();
                 }
 
-                List<DostavljacDTO> vrati = new();
-
-                dostavljac.ForEach(d =>
-                {
-                    vrati.Add(new DostavljacDTO()
-                    {
-                        Sifra = d.Sifra,
-                        Ime = d.Ime,
-                        Prezime = d.Prezime,
-                        Oib = d.Oib,
-                        Email = d.Email,
-                        Telefon = d.Telefon
-                    });
-                });
-                return Ok(vrati);
+                return Ok(dostavljac);
             }
             catch (Exception ex)
             {
@@ -217,7 +199,7 @@ namespace DostavaHrane.Controllers
 
         [HttpDelete]
         [Route("{sifra:int}")]
-        [Produces("application/json")]
+        //[Produces("application/json")]
         public IActionResult Delete(int sifra)
         {
             if (sifra <= 0)

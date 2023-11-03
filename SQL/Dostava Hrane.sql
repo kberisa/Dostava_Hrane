@@ -1,45 +1,45 @@
-﻿use master
-go
-drop database if exists dostava_hrane;
-go
-create database dostava_hrane;
-go
-use dostava_hrane;
+﻿--use master
+--go
+--drop database if exists dostava_hrane;
+--go
+--create database dostava_hrane;
+--go
+--use dostava_hrane;
 
 create table kupac(
-	sifra int not null primary key identity(1,1),
-	korisnicko_ime varchar(50),
-	ime varchar(50),
-	prezime varchar(50),
-	adresa varchar(50),
-	telefon varchar(20)
+	Sifra int not null primary key identity(1,1),
+	KorisnickoIme varchar(50),
+	Ime varchar(50),
+	Prezime varchar(50),
+	Adresa varchar(50),
+	Telefon varchar(20)
 );
 
 create table proizvod(
-	sifra int not null primary key identity(1,1),
-	naziv varchar(50),
-	opis varchar(200),
-	cijena dec(18,2),
-	dostupnost bit
+	Sifra int not null primary key identity(1,1),
+	Naziv varchar(50),
+	Opis varchar(200),
+	Cijena dec(18,2),
+	Dostupnost bit
 );
 
 create table dostavljac(
-	sifra int not null primary key identity(1,1),
-	ime varchar(50),
-	prezime varchar(50),
-	oib char(11),
-	email varchar(50),
-	telefon varchar(20)
+	Sifra int not null primary key identity(1,1),
+	Ime varchar(50),
+	Prezime varchar(50),
+	Oib char(11),
+	Email varchar(50),
+	Telefon varchar(20)
 );
 
 create table kosarica(
-	sifra int not null primary key identity(1,1),
-	proizvod int,
-	kolicina int,
-	kupac int,
-	adresa_dostave varchar(50),
-	status_dostave varchar(20),
-	dostavljac int
+	Sifra int not null primary key identity(1,1),
+	Proizvod int,
+	Kolicina int,
+	Kupac int,
+	AdresaDostave varchar(50),
+	StatusDostave varchar(20),
+	Dostavljac int
 );
 
 alter table kosarica add foreign key (proizvod) references proizvod(sifra);
@@ -83,13 +83,13 @@ INSERT INTO kosarica (proizvod, kolicina, kupac, adresa_dostave, status_dostave,
 VALUES (3, 2, 3, 'AdresaDostave3', 'Na čekanju', 1);
 
 
-UPDATE kupac
-SET ime = 'Ivan', prezime = 'Ivanov'
-WHERE sifra = 1;
+----UPDATE kupac
+--SET ime = 'Ivan', prezime = 'Ivanov'
+--WHERE sifra = 1;
 
-DELETE FROM kupac
-WHERE sifra = 2;
+--DELETE FROM kupac
+--WHERE sifra = 2;
 
-SELECT ime, prezime FROM kupac WHERE sifra ='1';
+--SELECT ime, prezime FROM kupac WHERE sifra ='1';
 
-SELECT * FROM dostavljac;
+--SELECT * FROM dostavljac;

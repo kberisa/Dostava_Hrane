@@ -10,12 +10,6 @@
             </summary>
             <param name="context"></param>
         </member>
-        <member name="M:DostavaHrane.Controllers.KosaricaController.#ctor(DostavaHrane.Data.DostavaHraneContext,Microsoft.Extensions.Logging.ILogger{DostavaHrane.Controllers.KosaricaController},AutoMapper.IMapper)">
-            <summary>
-            Konstruktor
-            </summary>
-            <param name="context"></param>
-        </member>
         <member name="M:DostavaHrane.Controllers.ProizvodController.#ctor(DostavaHrane.Data.DostavaHraneContext,Microsoft.Extensions.Logging.ILogger{DostavaHrane.Controllers.ProizvodController})">
             <summary>
             Konstruktor
